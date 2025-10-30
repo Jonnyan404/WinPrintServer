@@ -26,16 +26,16 @@ jobs:
 
     - name: Rename binaries for architecture distinction
       run: |
-        mv Release/WinPrintServer32.exe WinPrintServer-x86.exe
-        mv x64/Release/WinPrintServer.exe WinPrintServer-x64.exe
+        mv Release/WinPrintServer32.exe WinPrintServer-x86-${{ github.ref_name }}.exe
+        mv x64/Release/WinPrintServer.exe WinPrintServer-x64-${{ github.ref_name }}.exe
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4  # 升级到 v4
       with:
         name: WinPrintServer-binaries
         path: |
-          WinPrintServer-x86.exe
-          WinPrintServer-x64.exe
+          WinPrintServer-x86-${{ github.ref_name }}.exe
+          WinPrintServer-x64-${{ github.ref_name }}.exe
 
   release:
     needs: build  # 依赖build job
@@ -54,8 +54,8 @@ jobs:
       with:
         tag_name: ${{ github.ref_name }}  # 指定release的tag名
         files: |
-          ./artifacts/WinPrintServer-x86.exe
-          ./artifacts/WinPrintServer-x64.exe
+          ./artifacts/WinPrintServer-x86-${{ github.ref_name }}.exe
+          ./artifacts/WinPrintServer-x64-${{ github.ref_name }}.exe
         generate_release_notes: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
