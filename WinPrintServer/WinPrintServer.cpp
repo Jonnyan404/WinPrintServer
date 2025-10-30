@@ -5,6 +5,7 @@
 #include <WinSock2.h>
 #include <stdarg.h>
 
+const wchar_t* VERSION = L"v1.2";  // 版本号常量
 LPCWSTR dataType;
 std::wstring printerName = L"EPSON098CEF (WF-3520 Series)";
 int printerPort = 9100;
@@ -137,17 +138,18 @@ int wmain(int argc, wchar_t* argv[])
     delete[]pdiBuffer;
     ClosePrinter(hPrinter);
 
-    log(L"Print Server Started for '%s'", printerName.c_str());
+    log(L"WinPrintServer %s started", VERSION);
+    log(L"Listening on port %d for printer '%s' (data type: %s)", printerPort, printerName.c_str(), dataType);
     while (listen(serverSocket, 5) != SOCKET_ERROR)
     {
-        log(L"waiting for connection");
+        log(L"Waiting for connection...");
         clientSocket = accept(serverSocket, (sockaddr*)&client, &size);
         if (clientSocket == INVALID_SOCKET) 
         {
             logError(L"failed to accept client connection", WSAGetLastError());
             continue;
         }
-        log(L"connection from %d.%d.%d.%d", client.sin_addr.S_un.S_un_b.s_b1, client.sin_addr.S_un.S_un_b.s_b2, client.sin_addr.S_un.S_un_b.s_b3, client.sin_addr.S_un.S_un_b.s_b4);
+        log(L"Connection from %d.%d.%d.%d", client.sin_addr.S_un.S_un_b.s_b1, client.sin_addr.S_un.S_un_b.s_b2, client.sin_addr.S_un.S_un_b.s_b3, client.sin_addr.S_un.S_un_b.s_b4);
         
         DOC_INFO_1 di{};
         di.pDocName = const_cast<LPWSTR>(L"RAW Print Job");
@@ -166,7 +168,7 @@ int wmain(int argc, wchar_t* argv[])
             goto cleanup;
         }
 
-        log(L"print job started");
+        log(L"Print job started");
         char buffer[4096];
         DWORD bytesWritten;
         while (true)
@@ -184,7 +186,7 @@ int wmain(int argc, wchar_t* argv[])
             }
         }
         EndDocPrinter(hPrinter);
-        log(L"print job completed");
+        log(L"Print job completed");
 
     cleanup:
         if (clientSocket != INVALID_SOCKET)
@@ -224,9 +226,9 @@ void log(LPCWSTR format, ...)
 void showUsage()
 {
 #ifdef _WIN64
-    log(L"WinPrintServer v1.1 (64Bit)\r\n");
+    log(L"WinPrintServer %s (64Bit)\r\n", VERSION);
 #else
-    log(L"WinPrintServer v1.1 (32bit)\r\n");
+    log(L"WinPrintServer %s (32bit)\r\n", VERSION);
 #endif
     log(L"WinPrintServer [options] [printername]");
     log(L"  -h           Show this help information");
