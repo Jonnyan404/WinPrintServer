@@ -26,27 +26,54 @@ int wmain(int argc, wchar_t* argv[])
         logFatal(L"failed to initialize the socket library", status);
     }
 
-    if (argc == 1) 
+    // 解析命令行选项
+    int optind = 1;
+    while (optind < argc && argv[optind][0] == L'-')
     {
+        if (_wcsicmp(argv[optind], L"-h") == 0)
+        {
+            showUsage();
+        }
+        else if (_wcsicmp(argv[optind], L"-p") == 0)
+        {
+            optind++;
+            if (optind >= argc)
+            {
+                showUsage();
+            }
+            printerPort = _wtoi(argv[optind]);
+            if (printerPort <= 0 || printerPort > 65535)
+            {
+                logFatal(L"invalid port number", 0);
+            }
+        }
+        else
+        {
+            showUsage();
+        }
+        optind++;
+    }
+
+    // 处理打印机名称
+    if (optind == argc)
+    {
+        // 使用默认打印机
         DWORD cb;
-        if (!GetDefaultPrinter(NULL, &cb) && GetLastError() != ERROR_INSUFFICIENT_BUFFER) 
+        if (!GetDefaultPrinter(NULL, &cb) && GetLastError() != ERROR_INSUFFICIENT_BUFFER)
         {
             logFatal(L"no default printer defined", GetLastError());
         }
         LPWSTR szBuffer = new WCHAR[cb];
         GetDefaultPrinter(szBuffer, &cb);
         printerName = szBuffer;
-        delete[]szBuffer;
+        delete[] szBuffer;
     }
-    else if (argc == 2) 
+    else if (optind == argc - 1)
     {
-        if (_wcsicmp(argv[1], L"-h") == 0)
-        {
-            showUsage();
-        }
-        printerName = argv[1];
+        // 指定打印机名称
+        printerName = argv[optind];
     }
-    else 
+    else
     {
         showUsage();
     }
@@ -203,6 +230,7 @@ void showUsage()
 #endif
     log(L"WinPrintServer [options] [printername]");
     log(L"  -h           Show this help information");
+    log(L"  -p <port>    Specify the port to listen on (default: 9100)");
     log(L"  printername  The name of the printer to print. If not specified the default printer is used");
     exit(-1);
 }

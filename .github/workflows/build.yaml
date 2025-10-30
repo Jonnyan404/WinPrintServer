@@ -1,0 +1,60 @@
+name: Build WinPrintServer
+
+on:
+  release:
+    types: [published]  # 当release发布为public时触发
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  build:
+    runs-on: windows-latest  # 只在Windows上运行，因为代码依赖Windows API
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1
+
+    - name: Build Release x64
+      run: |
+        msbuild WinPrintServer.sln /p:Configuration=Release /p:Platform=x64
+
+    - name: Build Release x86
+      run: |
+        msbuild WinPrintServer.sln /p:Configuration=Release /p:Platform=x86
+
+    - name: Rename binaries for architecture distinction
+      run: |
+        mv WinPrintServer/Release/WinPrintServer.exe WinPrintServer-x86.exe
+        mv WinPrintServer/x64/Release/WinPrintServer.exe WinPrintServer-x64.exe
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: WinPrintServer-binaries
+        path: |
+          WinPrintServer-x86.exe
+          WinPrintServer-x64.exe
+
+  release:
+    needs: build  # 依赖build job
+    runs-on: ubuntu-latest  # release job可以在Linux上运行
+    if: github.event_name == 'release'  # 只在release事件时运行（避免手动触发时运行）
+
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: WinPrintServer-binaries
+        path: ./artifacts
+
+    - name: Upload to Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          ./artifacts/WinPrintServer-x86.exe
+          ./artifacts/WinPrintServer-x64.exe
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
