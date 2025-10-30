@@ -26,8 +26,8 @@ jobs:
 
     - name: Rename binaries for architecture distinction
       run: |
-        mv WinPrintServer/Release/WinPrintServer32.exe WinPrintServer-x86.exe
-        mv WinPrintServer/x64/Release/WinPrintServer.exe WinPrintServer-x64.exe
+        mv Release/WinPrintServer32.exe WinPrintServer-x86.exe
+        mv x64/Release/WinPrintServer.exe WinPrintServer-x64.exe
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4  # 升级到 v4
