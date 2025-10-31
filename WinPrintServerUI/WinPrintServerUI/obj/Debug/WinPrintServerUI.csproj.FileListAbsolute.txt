@@ -1,0 +1,9 @@
+C:\Users\jonny\Documents\GitHub\WinPrintServer\WinPrintServerUI\WinPrintServerUI\obj\Debug\WinPrintServerUI.csproj.AssemblyReference.cache
+C:\Users\jonny\Documents\GitHub\WinPrintServer\WinPrintServerUI\WinPrintServerUI\obj\Debug\WinPrintServerUI.Form1.resources
+C:\Users\jonny\Documents\GitHub\WinPrintServer\WinPrintServerUI\WinPrintServerUI\obj\Debug\WinPrintServerUI.Properties.Resources.resources
+C:\Users\jonny\Documents\GitHub\WinPrintServer\WinPrintServerUI\WinPrintServerUI\obj\Debug\WinPrintServerUI.csproj.GenerateResource.cache
+C:\Users\jonny\Documents\GitHub\WinPrintServer\WinPrintServerUI\WinPrintServerUI\obj\Debug\WinPrintServerUI.csproj.CoreCompileInputs.cache
+C:\Users\jonny\Documents\GitHub\WinPrintServer\WinPrintServerUI\WinPrintServerUI\bin\Debug\WinPrintServerUI.exe
+C:\Users\jonny\Documents\GitHub\WinPrintServer\WinPrintServerUI\WinPrintServerUI\bin\Debug\WinPrintServerUI.pdb
+C:\Users\jonny\Documents\GitHub\WinPrintServer\WinPrintServerUI\WinPrintServerUI\obj\Debug\WinPrintServerUI.exe
+C:\Users\jonny\Documents\GitHub\WinPrintServer\WinPrintServerUI\WinPrintServerUI\obj\Debug\WinPrintServerUI.pdb

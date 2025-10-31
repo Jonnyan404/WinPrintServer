@@ -2,12 +2,12 @@ name: Build WinPrintServer
 
 on:
   release:
-    types: [published]  # 当release发布为public时触发
-  workflow_dispatch:  # 允许手动触发
+    types: [published]
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: windows-latest  # 只在Windows上运行，因为代码依赖Windows API
+    runs-on: windows-latest
 
     steps:
     - name: Checkout code
@@ -16,35 +16,80 @@ jobs:
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
 
-    - name: Build Release x64
+    # 先编译 DLL
+    - name: Build DLL Release x64
       run: |
         msbuild WinPrintServer.sln /p:Configuration=Release /p:Platform=x64
 
-    - name: Build Release x86
+    - name: Build DLL Release x86
       run: |
         msbuild WinPrintServer.sln /p:Configuration=Release /p:Platform=x86
 
-    - name: Rename binaries for architecture distinction
+    # 再编译 UI（自动复制 DLL）
+    - name: Build UI Release x64
       run: |
-        mv Release/WinPrintServer32.exe WinPrintServer-x86-${{ github.ref_name }}.exe
-        mv x64/Release/WinPrintServer.exe WinPrintServer-x64-${{ github.ref_name }}.exe
+        msbuild WinPrintServerUI/WinPrintServerUI.sln /p:Configuration=Release /p:Platform=x64
+
+    - name: Build UI Release x86
+      run: |
+        msbuild WinPrintServerUI/WinPrintServerUI.sln /p:Configuration=Release /p:Platform=x86
+
+    - name: Create release packages
+      shell: pwsh
+      run: |
+        # 创建发布目录
+        New-Item -ItemType Directory -Force -Path ./release-x64
+        New-Item -ItemType Directory -Force -Path ./release-x86
+        
+        # 复制 x64 文件（UI 已经包含了 DLL）
+        Copy-Item -Path "x64/Release/WinPrintServer.exe" -Destination "./release-x64/"
+        Copy-Item -Path "WinPrintServerUI/WinPrintServerUI/bin/x64/Release/*" -Destination "./release-x64/" -Recurse
+        
+        # 复制 x86 文件（UI 已经包含了 DLL）
+        Copy-Item -Path "Release/WinPrintServer32.exe" -Destination "./release-x86/"
+        Copy-Item -Path "WinPrintServerUI/WinPrintServerUI/bin/x86/Release/*" -Destination "./release-x86/" -Recurse
+        
+        # 创建 README
+        @"
+        WinPrintServer ${{ github.ref_name }}
+        
+        📦 This package contains:
+        - WinPrintServerUI.exe: 🖥️ Graphical user interface (RECOMMENDED)
+        - WinPrintServer.exe: 💻 Command-line print server
+        
+        🚀 Quick Start:
+        Just run WinPrintServerUI.exe - all dependencies included!
+        
+        ✨ Features:
+        - Multi-instance support: Run multiple servers on different ports
+        - Real-time logging with filtering
+        - Easy printer selection
+        
+        📖 For more information: https://github.com/${{ github.repository }}
+        "@ | Out-File -FilePath "./release-x64/README.txt" -Encoding UTF8
+        
+        Copy-Item -Path "./release-x64/README.txt" -Destination "./release-x86/"
+        
+        # 创建压缩包（带版本号）
+        Compress-Archive -Path "./release-x64/*" -DestinationPath "WinPrintServer-${{ github.ref_name }}-x64.zip"
+        Compress-Archive -Path "./release-x86/*" -DestinationPath "WinPrintServer-${{ github.ref_name }}-x86.zip"
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v4  # 升级到 v4
+      uses: actions/upload-artifact@v4
       with:
         name: WinPrintServer-binaries
         path: |
-          WinPrintServer-x86-${{ github.ref_name }}.exe
-          WinPrintServer-x64-${{ github.ref_name }}.exe
+          WinPrintServer-${{ github.ref_name }}-x64.zip
+          WinPrintServer-${{ github.ref_name }}-x86.zip
 
   release:
-    needs: build  # 依赖build job
-    runs-on: ubuntu-latest  # release job可以在Linux上运行
-    if: github.event_name == 'release'  # 只在release事件时运行（避免手动触发时运行）
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
 
     steps:
     - name: Download artifacts
-      uses: actions/download-artifact@v4  # 升级到 v4
+      uses: actions/download-artifact@v4
       with:
         name: WinPrintServer-binaries
         path: ./artifacts
@@ -52,10 +97,9 @@ jobs:
     - name: Upload to Release
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: ${{ github.ref_name }}  # 指定release的tag名
         files: |
-          ./artifacts/WinPrintServer-x86-${{ github.ref_name }}.exe
-          ./artifacts/WinPrintServer-x64-${{ github.ref_name }}.exe
+          ./artifacts/WinPrintServer-${{ github.ref_name }}-x64.zip
+          ./artifacts/WinPrintServer-${{ github.ref_name }}-x86.zip
         generate_release_notes: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

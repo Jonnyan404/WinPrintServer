@@ -33,6 +33,12 @@
 /WinPrintServer/x64/Debug
 /x64/Debug
 /.vs
-/WinPrintServer/x64/Release
-/x64/Release
+
+/WinPrintServer/x64/Release*
+/x64/Release*
+/WinPrintServer/Release*
+/Release*
+
 /WinPrintServer/Release/WinPrintServer.tlog
+/WinPrintServerUI/.vs
+/WinPrintServerUI/WinPrintServerUI/.vs

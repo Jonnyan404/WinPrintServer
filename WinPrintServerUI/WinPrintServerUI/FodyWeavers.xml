@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Weavers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FodyWeavers.xsd">
+  <Costura>
+    <!-- 非托管 DLL 需要指定完整文件名 -->
+    <Unmanaged32Assemblies>
+      WinPrintServer32.dll
+    </Unmanaged32Assemblies>
+    <Unmanaged64Assemblies>
+      WinPrintServer.dll
+    </Unmanaged64Assemblies>
+  </Costura>
+</Weavers>
