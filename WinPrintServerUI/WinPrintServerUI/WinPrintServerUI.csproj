@@ -101,12 +101,15 @@
   
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   
-  <!-- 构建后自动复制对应平台的 DLL - 修正路径 -->
+  <!-- 构建后自动复制对应平台的 DLL - 智能路径选择 -->
   <Target Name="CopyDLLs" AfterTargets="AfterBuild">
     <PropertyGroup>
-      <!-- 根据平台确定 DLL 源路径 - 修正为正确的相对路径 -->
-      <DLLSourcePath Condition="'$(Platform)' == 'x64'">$(SolutionDir)..\WinPrintServer\WinPrintServer\ReleaseDLL\WinPrintServer.dll</DLLSourcePath>
-      <DLLSourcePath Condition="'$(Platform)' == 'x86'">$(SolutionDir)..\WinPrintServer\WinPrintServer\ReleaseDLL\WinPrintServer32.dll</DLLSourcePath>
+      <!-- 优先使用 CI 环境绝对路径，否则使用相对路径 -->
+      <DLLSourcePath Condition="'$(Platform)' == 'x64' And Exists('D:\a\WinPrintServer\WinPrintServer\ReleaseDLL\WinPrintServer.dll')">D:\a\WinPrintServer\WinPrintServer\ReleaseDLL\WinPrintServer.dll</DLLSourcePath>
+      <DLLSourcePath Condition="'$(Platform)' == 'x86' And Exists('D:\a\WinPrintServer\WinPrintServer\ReleaseDLL\WinPrintServer32.dll')">D:\a\WinPrintServer\WinPrintServer\ReleaseDLL\WinPrintServer32.dll</DLLSourcePath>
+      <!-- 本地开发环境相对路径 -->
+      <DLLSourcePath Condition="'$(Platform)' == 'x64' And Exists('$(SolutionDir)..\WinPrintServer\WinPrintServer\ReleaseDLL\WinPrintServer.dll')">$(SolutionDir)..\WinPrintServer\WinPrintServer\ReleaseDLL\WinPrintServer.dll</DLLSourcePath>
+      <DLLSourcePath Condition="'$(Platform)' == 'x86' And Exists('$(SolutionDir)..\WinPrintServer\WinPrintServer\ReleaseDLL\WinPrintServer32.dll')">$(SolutionDir)..\WinPrintServer\WinPrintServer\ReleaseDLL\WinPrintServer32.dll</DLLSourcePath>
       <DLLFileName Condition="'$(Platform)' == 'x64'">WinPrintServer.dll</DLLFileName>
       <DLLFileName Condition="'$(Platform)' == 'x86'">WinPrintServer32.dll</DLLFileName>
     </PropertyGroup>
