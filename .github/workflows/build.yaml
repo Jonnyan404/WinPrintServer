@@ -25,14 +25,15 @@ jobs:
         nuget restore WinPrintServerUI/WinPrintServerUI.sln
 
     # 先编译 DLL
-    - name: Build DLL Release x64
+    - name: Build DLL and exe Release x64
       run: |
         msbuild WinPrintServer.sln /p:Configuration=ReleaseDLL /p:Platform=x64
+        msbuild WinPrintServer.sln /p:Configuration=Release /p:Platform=x64
 
-    - name: Build DLL Release x86
+    - name: Build DLL and exe Release x86
       run: |
         msbuild WinPrintServer.sln /p:Configuration=ReleaseDLL /p:Platform=x86
-
+        msbuild WinPrintServer.sln /p:Configuration=Release /p:Platform=x86
     # 编译 UI
     - name: Build UI Release x64
       run: |
