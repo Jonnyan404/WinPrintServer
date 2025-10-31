@@ -105,10 +105,10 @@
   <Target Name="CopyDLLs" AfterTargets="AfterBuild">
     <PropertyGroup>
       <!-- 优先使用 CI 环境绝对路径，否则使用相对路径 -->
-      <DLLSourcePath Condition="'$(Platform)' == 'x64' And Exists('D:\a\WinPrintServer\WinPrintServer\x64\ReleaseDLL\WinPrintServer.dll')">D:\a\WinPrintServer\WinPrintServer\ReleaseDLL\WinPrintServer.dll</DLLSourcePath>
+      <DLLSourcePath Condition="'$(Platform)' == 'x64' And Exists('D:\a\WinPrintServer\WinPrintServer\x64\ReleaseDLL\WinPrintServer.dll')">D:\a\WinPrintServer\WinPrintServer\x64\ReleaseDLL\WinPrintServer.dll</DLLSourcePath>
       <DLLSourcePath Condition="'$(Platform)' == 'x86' And Exists('D:\a\WinPrintServer\WinPrintServer\ReleaseDLL\WinPrintServer32.dll')">D:\a\WinPrintServer\WinPrintServer\ReleaseDLL\WinPrintServer32.dll</DLLSourcePath>
       <!-- 本地开发环境相对路径 -->
-      <DLLSourcePath Condition="'$(Platform)' == 'x64' And Exists('$(SolutionDir)..\WinPrintServer\WinPrintServer\x64\ReleaseDLL\WinPrintServer.dll')">$(SolutionDir)..\WinPrintServer\WinPrintServer\ReleaseDLL\WinPrintServer.dll</DLLSourcePath>
+      <DLLSourcePath Condition="'$(Platform)' == 'x64' And Exists('$(SolutionDir)..\WinPrintServer\WinPrintServer\x64\ReleaseDLL\WinPrintServer.dll')">$(SolutionDir)..\WinPrintServer\WinPrintServer\x64\ReleaseDLL\WinPrintServer.dll</DLLSourcePath>
       <DLLSourcePath Condition="'$(Platform)' == 'x86' And Exists('$(SolutionDir)..\WinPrintServer\WinPrintServer\ReleaseDLL\WinPrintServer32.dll')">$(SolutionDir)..\WinPrintServer\WinPrintServer\ReleaseDLL\WinPrintServer32.dll</DLLSourcePath>
       <DLLFileName Condition="'$(Platform)' == 'x64'">WinPrintServer.dll</DLLFileName>
       <DLLFileName Condition="'$(Platform)' == 'x86'">WinPrintServer32.dll</DLLFileName>
