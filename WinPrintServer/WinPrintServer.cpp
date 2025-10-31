@@ -8,7 +8,7 @@
 #include <map>
 #include <mutex>
 
-const wchar_t* VERSION = L"v1.2";
+const wchar_t* VERSION = L"v1.3";
 
 // 服务实例结构体
 struct ServerInstance {
