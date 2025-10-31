@@ -11,6 +11,8 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <!-- 添加这个属性以支持 PackageReference -->
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -77,6 +79,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -98,14 +101,35 @@
   
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   
-  <!-- 构建后自动复制对应平台的 DLL -->
-  <Target Name="CopyDLLs" AfterTargets="Build">
+  <!-- 构建后自动复制对应平台的 DLL - 修正路径 -->
+  <Target Name="CopyDLLs" AfterTargets="AfterBuild">
     <PropertyGroup>
       <!-- 根据平台确定 DLL 源路径 -->
       <DLLSourcePath Condition="'$(Platform)' == 'x64'">$(SolutionDir)..\x64\$(Configuration)\WinPrintServer.dll</DLLSourcePath>
       <DLLSourcePath Condition="'$(Platform)' == 'x86'">$(SolutionDir)..\$(Configuration)\WinPrintServer32.dll</DLLSourcePath>
+      <DLLFileName Condition="'$(Platform)' == 'x64'">WinPrintServer.dll</DLLFileName>
+      <DLLFileName Condition="'$(Platform)' == 'x86'">WinPrintServer32.dll</DLLFileName>
     </PropertyGroup>
-    <Copy SourceFiles="$(DLLSourcePath)" DestinationFolder="$(OutDir)" Condition="Exists('$(DLLSourcePath)')" />
-    <Message Text="Copied DLL from $(DLLSourcePath) to $(OutDir)" Importance="high" Condition="Exists('$(DLLSourcePath)')" />
+    
+    <!-- 显示详细信息 -->
+    <Message Text="===== CopyDLLs Target Started =====" Importance="high" />
+    <Message Text="Platform: $(Platform)" Importance="high" />
+    <Message Text="Configuration: $(Configuration)" Importance="high" />
+    <Message Text="SolutionDir: $(SolutionDir)" Importance="high" />
+    <Message Text="Output Dir: $(OutDir)" Importance="high" />
+    <Message Text="DLL Source: $(DLLSourcePath)" Importance="high" />
+    <Message Text="DLL Exists: $([System.IO.File]::Exists('$(DLLSourcePath)'))" Importance="high" />
+    
+    <!-- 如果 DLL 不存在，显示警告而不是错误（防止首次编译失败） -->
+    <Warning Text="DLL not found at: $(DLLSourcePath). Please build the main WinPrintServer project first." Condition="!Exists('$(DLLSourcePath)')" />
+    
+    <!-- 复制 DLL -->
+    <Copy SourceFiles="$(DLLSourcePath)" 
+          DestinationFiles="$(OutDir)$(DLLFileName)" 
+          Condition="Exists('$(DLLSourcePath)')" 
+          OverwriteReadOnlyFiles="true" />
+          
+    <Message Text="✅ Copied $(DLLFileName) to $(OutDir)" Importance="high" Condition="Exists('$(DLLSourcePath)')" />
+    <Message Text="===== CopyDLLs Target Completed =====" Importance="high" />
   </Target>
 </Project>
