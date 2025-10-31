@@ -16,15 +16,13 @@ jobs:
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
 
-    - name: Setup .NET Framework
-      uses: microsoft/setup-msbuild@v1.1
-      
-    # 安装 .NET Framework 4.0 目标包
-    - name: Install .NET Framework 4.0 Developer Pack
-      shell: pwsh
+    - name: Setup NuGet
+      uses: nuget/setup-nuget@v1
+
+    # 恢复 NuGet 包（包括 .NET Framework 4.0 引用程序集）
+    - name: Restore NuGet packages
       run: |
-        # 下载并安装 .NET Framework 4.0 目标包
-        choco install netfx-4.0-devpack -y
+        nuget restore WinPrintServerUI/WinPrintServerUI.sln
 
     # 先编译 DLL
     - name: Build DLL Release x64
