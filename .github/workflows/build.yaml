@@ -25,14 +25,14 @@ jobs:
       run: |
         msbuild WinPrintServer.sln /p:Configuration=Release /p:Platform=x86
 
-    # 再编译 UI（自动复制 DLL）
+    # 直接编译 UI 项目文件（不是解决方案文件）
     - name: Build UI Release x64
       run: |
-        msbuild WinPrintServerUI/WinPrintServerUI.sln /p:Configuration=Release /p:Platform=x64
+        msbuild WinPrintServerUI/WinPrintServerUI/WinPrintServerUI.csproj /p:Configuration=Release /p:Platform=x64
 
     - name: Build UI Release x86
       run: |
-        msbuild WinPrintServerUI/WinPrintServerUI.sln /p:Configuration=Release /p:Platform=x86
+        msbuild WinPrintServerUI/WinPrintServerUI/WinPrintServerUI.csproj /p:Configuration=Release /p:Platform=x86
 
     - name: Create release packages
       shell: pwsh
