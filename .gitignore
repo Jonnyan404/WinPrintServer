@@ -30,15 +30,48 @@
 *.exe
 *.out
 *.app
-/WinPrintServer/x64/Debug
-/x64/Debug
-/.vs
 
-/WinPrintServer/x64/Release*
-/x64/Release*
-/WinPrintServer/Release*
-/Release*
+# Visual Studio
+.vs
+*.user
+*.aps
+*.pch
+*.vspscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.tmp
+*.tmp_proj
+*.log
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.svcmap
 
-/WinPrintServer/Release/WinPrintServer.tlog
-/WinPrintServerUI/.vs
-/WinPrintServerUI/WinPrintServerUI/.vs
+# WinPrintServer C++ 项目输出
+WinPrintServer/WinPrintServer/
+WinPrintServer/x64/
+WinPrintServer/ReleaseDLL/
+WinPrintServer/WinPrintServer/ReleaseDLL/
+WinPrintServer/WinPrintServer/x64/
+
+# WinPrintServerUI .NET 项目输出
+WinPrintServerUI/WinPrintServerUI/bin/
+WinPrintServerUI/WinPrintServerUI/obj/
+WinPrintServerUI/.vs/
+
+# 其他可能的输出目录
+WinPrintServer/Debug/
+WinPrintServer/Release/
+WinPrintServer/Win32/
+WinPrintServer/x86/
+
+# 临时文件
+*.tmp
+*.temp
+Thumbs.db

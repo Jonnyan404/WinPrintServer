@@ -64,6 +64,7 @@ jobs:
         
         📦 This package contains:
         - WinPrintServerUI.exe: 🖥️ Graphical user interface (RECOMMENDED)
+        - WinPrintServer.dll / WinPrintServer32.dll: 🔧 Print server core library
         - WinPrintServer.exe: 💻 Command-line print server
         
         🚀 Quick Start:

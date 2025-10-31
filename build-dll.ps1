@@ -9,7 +9,11 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $solutionDir = $scriptDir
 $cppProject = Join-Path $solutionDir "WinPrintServer\WinPrintServer.vcxproj"
 $uiProject = Join-Path $solutionDir "WinPrintServerUI\WinPrintServerUI"
-$uiBinDebug = Join-Path $uiProject "bin\Debug"
+
+# 自动判断平台
+$is64Bit = [Environment]::Is64BitProcess
+$platformSuffix = if ($is64Bit) { "x64" } else { "" }
+$uiBinDebug = Join-Path $uiProject "bin\$platformSuffix\Debug"
 
 # 查找MSBuild
 $msbuildPath = $null
@@ -25,6 +29,7 @@ if (-not $msbuildPath) {
 }
 
 Write-Host "使用MSBuild: $msbuildPath" -ForegroundColor Green
+Write-Host "检测到平台: $(if ($is64Bit) { 'x64' } else { 'x86' })" -ForegroundColor Green
 Write-Host ""
 
 # 编译ReleaseDLL x64

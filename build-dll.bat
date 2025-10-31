@@ -1,5 +1,5 @@
+REM filepath: c:\Users\jonny\Documents\GitHub\WinPrintServer\build-dll.bat
 @echo off
-REM filepath: c:\Users\jonny\Documents\GitHub\WinPrintServer\build.bat
 REM 编译C++ DLL并复制到UI项目
 
 setlocal enabledelayedexpansion
@@ -8,7 +8,14 @@ REM 设置路径
 set SOLUTION_DIR=%~dp0
 set CPP_PROJECT=%SOLUTION_DIR%WinPrintServer\WinPrintServer.vcxproj
 set UI_PROJECT=%SOLUTION_DIR%WinPrintServerUI\WinPrintServerUI
-set UI_BIN_DEBUG=%UI_PROJECT%\bin\Debug
+
+REM 自动判断平台
+if "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
+    set PLATFORM_SUFFIX=x64
+) else (
+    set PLATFORM_SUFFIX=
+)
+set UI_BIN_DEBUG=%UI_PROJECT%\bin\%PLATFORM_SUFFIX%\Debug
 
 REM Visual Studio 版本（根据实际修改）
 set MSBUILD_PATH=C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe
@@ -21,6 +28,7 @@ if not exist "%MSBUILD_PATH%" (
 )
 
 echo ===== 开始编译C++ DLL =====
+echo 检测到平台: %PLATFORM_SUFFIX%
 echo.
 
 REM 编译 ReleaseDLL|x64

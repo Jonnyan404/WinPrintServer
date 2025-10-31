@@ -145,11 +145,12 @@ namespace WinPrintServerUI
             contextMenu.Items.Add(stopMenuItem);
             lvServices.ContextMenuStrip = contextMenu;
             
-            // 添加提示标签 - 修正位置，放在服务列表下方
+            // 添加提示标签 - 改到端口 label 下方
             Label tipLabel = new Label();
-            tipLabel.Text = "💡 提示: 右键点击服务可停止";
+            tipLabel.Text = "💡 提示: 右键点击列表服务可停止";
             tipLabel.AutoSize = true;
-            tipLabel.Location = new Point(lvServices.Left, lvServices.Bottom + 5);
+            // 定位到端口label下方
+            tipLabel.Location = new Point(label2.Left, label2.Bottom + 5);
             tipLabel.ForeColor = Color.Blue;
             tipLabel.Font = new Font(this.Font.FontFamily, 10, FontStyle.Regular);
             this.Controls.Add(tipLabel);

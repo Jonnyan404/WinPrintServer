@@ -28,3 +28,8 @@ WinPrintServer -p 9200 "EPSON098CEF (WF-3520 Series)"
 ```
 
 *注意* - 由于打印机名称包含空格，名称在命令行中需要用引号括起来
+
+# FAQ
+
+- 优先使用原版驱动
+- 备选驱动: https://www.support.xerox.com/en-us/content/135364 这个是x64,页面有x86的,请注意根据自己的平台来下载
